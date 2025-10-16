@@ -154,7 +154,10 @@ def get_colmap_version(colmap_cmd: str, default_version=3.8) -> float:
     assert output is not None
     for line in output.split("\n"):
         if line.startswith("COLMAP"):
-            return float(line.split(" ")[1])
+            return float("3.13")
+            # line = line.split(" ")[1].replace(".dev0", "")
+            # print(f"{line.replace(".dev0", "")split(' ')[1]}")
+            # return float(line.split(" ")[1])
     CONSOLE.print(f"[bold red]Could not find COLMAP version. Using default {default_version}")
     return default_version
 
@@ -521,7 +524,8 @@ def run_colmap(
         f"--image_path {image_dir}",
         "--ImageReader.single_camera 1",
         f"--ImageReader.camera_model {camera_model.value}",
-        f"--SiftExtraction.use_gpu {int(gpu)}",
+        f"--FeatureExtraction.use_gpu {int(gpu)}"
+        # f"--SiftExtraction.use_gpu {int(gpu)}",
     ]
     feature_extractor_cmd = " ".join(feature_extractor_cmd)
     with status(msg="[bold yellow]Running COLMAP feature extractor...", spinner="moon", verbose=verbose):
@@ -533,7 +537,8 @@ def run_colmap(
     feature_matcher_cmd = [
         f"{colmap_cmd} {matching_method}_matcher",
         f"--database_path {colmap_dir / 'database.db'}",
-        f"--SiftMatching.use_gpu {int(gpu)}",
+        f"--FeatureMatching.use_gpu {int(gpu)}"
+        # f"--SiftMatching.use_gpu {int(gpu)}",
     ]
     if matching_method == "vocab_tree":
         vocab_tree_filename = get_vocab_tree()
